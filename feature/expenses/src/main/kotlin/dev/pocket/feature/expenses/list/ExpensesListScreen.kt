@@ -190,7 +190,7 @@ private fun DayHeader(day: ExpenseDay, modifier: Modifier = Modifier) {
             )
             Text(
                 text = MoneyFormatter.format(day.dayTotal),
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.labelLarge.copy(fontFeatureSettings = "tnum"),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }

@@ -12,11 +12,12 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.pocket.core.designsystem.theme.Spacing
+import kotlinx.coroutines.launch
 
 /**
  * Wraps a row in swipe-to-delete.
@@ -24,6 +25,17 @@ import dev.pocket.core.designsystem.theme.Spacing
  * The dismissed row is *not* removed from the list here — the delete goes through the ViewModel
  * and the row disappears when the database Flow re-emits. Removing it locally as well would mean
  * two sources of truth for what is on screen, and an undo would have to reconcile them.
+ *
+ * The trigger is [SwipeToDismissBox]'s own `onDismiss` callback, which the library fires off
+ * `settledValue` — i.e. only once the swipe gesture has actually finished. Resetting after the
+ * delete trigger is a fallback: without it, a slow or failed delete would leave the row
+ * non-interactive forever, since [SwipeToDismissBox] disables its own drag gesture once
+ * `settledValue` leaves `Settled`.
+ *
+ * [content] (an [ExpenseRow]) paints no background of its own — it relies on whatever sits behind
+ * it. `SwipeToDismissBox` stacks it directly on top of `backgroundContent`, so without an opaque
+ * layer here the red/bin background was visible *at rest*, through every row, on every screen —
+ * not only mid-swipe. Confirmed live on-device: the row looked "stuck" without ever being swiped.
  */
 @Composable
 internal fun SwipeToDeleteRow(
@@ -32,18 +44,15 @@ internal fun SwipeToDeleteRow(
     content: @Composable () -> Unit,
 ) {
     val state = rememberSwipeToDismissBoxState()
-
-    LaunchedEffect(state.currentValue) {
-        if (state.currentValue != SwipeToDismissBoxValue.Settled) {
-            onDelete()
-            // Snap back so the row is in a neutral position if the user undoes the delete.
-            state.reset()
-        }
-    }
+    val scope = rememberCoroutineScope()
 
     SwipeToDismissBox(
         state = state,
         modifier = modifier,
+        onDismiss = {
+            onDelete()
+            scope.launch { state.reset() }
+        },
         backgroundContent = {
             val alignment = when (state.dismissDirection) {
                 SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
@@ -63,7 +72,15 @@ internal fun SwipeToDeleteRow(
                 )
             }
         },
-        content = { content() },
+        content = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface),
+            ) {
+                content()
+            }
+        },
     )
 }
 

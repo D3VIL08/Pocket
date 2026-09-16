@@ -23,6 +23,7 @@ object PocketTextStyles {
         fontSize = 40.sp,
         lineHeight = 48.sp,
         textAlign = TextAlign.Center,
+        fontFeatureSettings = "tnum",
     )
 
     /** The amount on a single expense row. */
@@ -31,6 +32,7 @@ object PocketTextStyles {
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 22.sp,
+        fontFeatureSettings = "tnum",
     )
 
     /** The amount being typed on the entry screen. */
@@ -39,5 +41,6 @@ object PocketTextStyles {
         fontWeight = FontWeight.SemiBold,
         fontSize = 44.sp,
         lineHeight = 52.sp,
+        fontFeatureSettings = "tnum",
     )
 }
