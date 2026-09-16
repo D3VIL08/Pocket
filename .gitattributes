@@ -1,0 +1,27 @@
+# Normalise line endings in the repository; check out LF everywhere by default.
+* text=auto eol=lf
+
+# The Gradle wrapper script must stay LF even on Windows. With core.autocrlf=true it would be
+# checked out with CRLF, and CI then fails with "/bin/sh^M: bad interpreter" — an error that
+# looks nothing like a line-ending problem.
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Windows batch files are the one thing that genuinely needs CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Never touch binaries.
+*.jar binary
+*.apk binary
+*.aab binary
+*.aar binary
+*.keystore binary
+*.png binary
+*.jpg binary
+*.webp binary
+*.ttf binary
+*.otf binary
+
+# Keep generated Room schemas out of diff noise but still reviewable.
+core/database/schemas/**/*.json text eol=lf
