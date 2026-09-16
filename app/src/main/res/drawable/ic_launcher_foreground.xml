@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A wallet outline with a coin. Drawn as a vector so one file covers every density, and sized on
+  the 108dp adaptive-icon canvas with the artwork inside the 66dp safe zone.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,38 h42 a6,6 0 0 1 6,6 v4 h-8 a10,10 0 0 0 0,20 h8 v4 a6,6 0 0 1 -6,6 h-42 a6,6 0 0 1 -6,-6 v-28 a6,6 0 0 1 6,-6 z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M70,52 h12 a2,2 0 0 1 2,2 v8 a2,2 0 0 1 -2,2 h-12 a6,6 0 0 1 0,-12 z" />
+    <path
+        android:fillColor="#006A60"
+        android:pathData="M73,56 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+</vector>

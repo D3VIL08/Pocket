@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Spending history is worth restoring onto a new device. -->
+    <include domain="database" path="pocket.db" />
+    <include domain="file" path="datastore/" />
+</full-backup-content>

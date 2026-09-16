@@ -1,0 +1,61 @@
+build:
+  maxIssues: 0
+
+complexity:
+  LongParameterList:
+    # Stateless composables legitimately take many parameters — that is how state hoisting works,
+    # and test data builders exist precisely to expose every field with a default.
+    ignoreAnnotated: ['Composable', 'Preview']
+    excludes: ['**/test/**', '**/androidTest/**', '**/core/testing/**']
+    functionThreshold: 8
+    constructorThreshold: 8
+  LongMethod:
+    ignoreAnnotated: ['Composable', 'Preview']
+    threshold: 80
+  TooManyFunctions:
+    thresholdInFiles: 20
+    thresholdInClasses: 20
+    ignoreAnnotatedFunctions: ['Composable', 'Preview']
+
+naming:
+  FunctionNaming:
+    # Composables are PascalCase by convention.
+    ignoreAnnotated: ['Composable', 'Preview']
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][A-Za-z0-9]*'
+
+style:
+  MagicNumber:
+    ignoreAnnotated: ['Composable', 'Preview']
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreNamedArgument: true
+  MaxLineLength:
+    maxLineLength: 120
+    excludes: ['**/test/**', '**/androidTest/**']
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview']
+  ReturnCount:
+    max: 4
+  ForbiddenComment:
+    active: false
+
+formatting:
+  MaximumLineLength:
+    maxLineLength: 120
+    excludes: ['**/test/**', '**/androidTest/**']
+  FunctionNaming:
+    ignoreAnnotated: ['Composable', 'Preview']
+  ArgumentListWrapping:
+    active: false
+  Wrapping:
+    active: false
+  # Compose-heavy code reads better with the trailing-comma style the Kotlin style guide allows.
+  TrailingCommaOnCallSite:
+    active: false
+  TrailingCommaOnDeclarationSite:
+    active: false
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false

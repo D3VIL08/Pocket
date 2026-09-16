@@ -1,0 +1,34 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/**/build/
+
+# Local configuration
+local.properties
+*.keystore
+!debug.keystore
+keystore.properties
+
+# Android
+*.apk
+*.aab
+*.ap_
+*.dex
+release/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+
+# Logs / reports
+*.log
+*.hprof
+lint-results*.html
+lint-results*.xml

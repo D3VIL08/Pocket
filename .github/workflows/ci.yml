@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+# A newer push to the same branch makes an in-flight run redundant.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build, test and analyse
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      # The ubuntu-latest runner ships an Android SDK, so no separate install step is needed.
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Static analysis
+        run: ./gradlew detekt --stacktrace
+
+      - name: Android Lint
+        run: ./gradlew lintDebug --stacktrace
+
+      # `test`, not `testDebugUnitTest`: the latter does not exist on the pure-JVM modules
+      # (:core:model, :core:domain, :core:common), so it would silently skip their suites.
+      # Unit, Room and Robolectric-driven Compose tests all run on the JVM, so CI needs no
+      # emulator and nothing here is flaky for device reasons.
+      - name: Unit tests
+        run: ./gradlew test --stacktrace
+
+      - name: Assemble debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload test reports
+        # Reports are most useful precisely when the run failed.
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            **/build/reports/tests/
+            **/build/reports/detekt/
+            **/build/reports/lint-results-*.html
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Upload debug APK
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pocket-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 7
